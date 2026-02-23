@@ -1,0 +1,19 @@
+transaction: XK01
+name: Create Vendor
+description: Create new vendor master record
+
+header:
+  vendor_account_group: "0001"
+  company_code: "1000"
+  purchasing_organization: "1000"
+
+general_data:
+  name: "New Vendor Name"
+  street: "123 Main St"
+  city: "New York"
+  country: "US"
+  postal_code: "10001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

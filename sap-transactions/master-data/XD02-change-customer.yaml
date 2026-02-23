@@ -1,0 +1,12 @@
+transaction: XD02
+name: Change Customer
+description: Change existing customer master
+
+header:
+  customer: "1000"
+
+changes:
+  name: "Updated Customer Name"
+
+options:
+  save_after_creation: true

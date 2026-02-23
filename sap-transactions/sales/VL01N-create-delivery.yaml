@@ -1,0 +1,12 @@
+transaction: VL01N
+name: Create Delivery
+description: Create outbound delivery
+
+header:
+  shipping_point: "1000"
+  selection_date: "31.12.2025"
+  sales_order: "1000000001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

@@ -1,0 +1,27 @@
+transaction: VA01
+name: Create Sales Order
+description: Create new sales order
+
+header:
+  order_type: "OR"
+  sales_organization: "1000"
+  distribution_channel: "10"
+  division: "00"
+  sold_to_party: "1000"
+
+items:
+  - item_number: "10"
+    material: "100-100"
+    quantity: "5"
+    unit: "EA"
+    plant: "1000"
+
+  - item_number: "20"
+    material: "200-200"
+    quantity: "3"
+    unit: "EA"
+    plant: "1000"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

@@ -1,0 +1,13 @@
+transaction: MB51
+name: Material Document List
+description: Display material documents
+
+header:
+  material: "100-100"
+  plant: "1000"
+  movement_type: "101"
+  posting_date_from: "01.01.2025"
+  posting_date_to: "31.12.2025"
+
+options:
+  extract_document_number: false

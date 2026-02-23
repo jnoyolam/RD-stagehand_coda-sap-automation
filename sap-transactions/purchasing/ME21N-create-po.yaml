@@ -1,0 +1,37 @@
+transaction: ME21N
+name: Create Purchase Order
+description: Create new purchase order
+
+header:
+  vendor: "1000"
+  purchasing_organization: "1000"
+  purchasing_group: "001"
+  company_code: "1000"
+  document_type: "NB"
+
+items:
+  - item_number: "10"
+    material: "100-100"
+    quantity: "10"
+    unit: "EA"
+    price: "99.99"
+    delivery_date: "31.12.2025"
+    plant: "1000"
+    storage_location: "0001"
+
+  - item_number: "20"
+    material: "200-200"
+    quantity: "5"
+    unit: "EA"
+    price: "149.99"
+    delivery_date: "15.01.2026"
+    plant: "1000"
+
+options:
+  save_after_creation: true
+  extract_document_number: true
+  wait_for_confirmation: true
+
+validations:
+  check_status: "Created"
+  verify_items_count: 2

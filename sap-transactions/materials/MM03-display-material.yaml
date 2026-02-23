@@ -1,0 +1,9 @@
+transaction: MM03
+name: Display Material
+description: Display material master data
+
+header:
+  material: "100-100"
+
+options:
+  extract_document_number: false

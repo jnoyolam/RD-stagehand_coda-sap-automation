@@ -1,0 +1,9 @@
+transaction: CO03
+name: Display Production Order
+description: Display production order details
+
+header:
+  production_order: "1000000001"
+
+options:
+  extract_document_number: false

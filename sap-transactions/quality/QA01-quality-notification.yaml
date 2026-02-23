@@ -1,0 +1,15 @@
+transaction: QA01
+name: Create Quality Notification
+description: Create quality notification
+
+header:
+  notification_type: "Q1"
+  material: "100-100"
+  plant: "1000"
+
+description:
+  short_text: "Quality issue description"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

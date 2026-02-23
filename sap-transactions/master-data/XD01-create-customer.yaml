@@ -1,0 +1,20 @@
+transaction: XD01
+name: Create Customer
+description: Create new customer master record
+
+header:
+  customer_account_group: "0001"
+  sales_organization: "1000"
+  distribution_channel: "10"
+  division: "00"
+
+general_data:
+  name: "New Customer Name"
+  street: "456 Oak Ave"
+  city: "Los Angeles"
+  country: "US"
+  postal_code: "90001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

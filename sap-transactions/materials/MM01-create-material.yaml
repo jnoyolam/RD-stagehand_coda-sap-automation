@@ -1,0 +1,21 @@
+transaction: MM01
+name: Create Material
+description: Create new material master record
+
+header:
+  material_type: "FERT"
+  industry_sector: "M"
+  material: "AUTO-GEN"
+
+basic_data:
+  description: "New Material Description"
+  base_unit: "EA"
+  material_group: "001"
+
+purchasing_data:
+  purchasing_group: "001"
+  plant: "1000"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

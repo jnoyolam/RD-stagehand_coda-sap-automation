@@ -1,0 +1,10 @@
+transaction: ME2N
+name: Purchase Orders by Vendor
+description: List purchase orders for a vendor
+
+header:
+  vendor: "1000"
+  purchasing_organization: "1000"
+
+options:
+  extract_document_number: false

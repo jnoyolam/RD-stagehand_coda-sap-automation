@@ -1,0 +1,10 @@
+transaction: FS00
+name: G/L Account Master
+description: Display or change G/L account master
+
+header:
+  gl_account: "400000"
+  company_code: "1000"
+
+options:
+  extract_document_number: false

@@ -1,0 +1,12 @@
+transaction: VA02
+name: Change Sales Order
+description: Change existing sales order
+
+header:
+  sales_order: "1000000001"
+
+changes:
+  item_10_quantity: "10"
+
+options:
+  save_after_creation: true

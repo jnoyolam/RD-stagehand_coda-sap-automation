@@ -1,0 +1,12 @@
+transaction: ME22N
+name: Change Purchase Order
+description: Change existing purchase order
+
+header:
+  purchase_order: "4500000001"
+
+changes:
+  item_10_quantity: "20"
+
+options:
+  save_after_creation: true

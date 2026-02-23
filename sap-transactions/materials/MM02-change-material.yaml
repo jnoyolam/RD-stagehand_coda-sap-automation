@@ -1,0 +1,13 @@
+transaction: MM02
+name: Change Material
+description: Change existing material master
+
+header:
+  material: "100-100"
+
+changes:
+  description: "Updated Description"
+  material_group: "002"
+
+options:
+  save_after_creation: true

@@ -1,0 +1,17 @@
+transaction: FB60
+name: Enter Incoming Invoice
+description: Post vendor invoice
+
+header:
+  invoice_date: "31.12.2025"
+  posting_date: "31.12.2025"
+  vendor: "1000"
+  amount: "1000.00"
+  currency: "USD"
+  purchase_order: "4500000001"
+  payment_terms: "0001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true
+  wait_for_confirmation: true

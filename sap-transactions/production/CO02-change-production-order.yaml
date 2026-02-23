@@ -1,0 +1,12 @@
+transaction: CO02
+name: Change Production Order
+description: Change existing production order
+
+header:
+  production_order: "1000000001"
+
+changes:
+  quantity: "150"
+
+options:
+  save_after_creation: true

@@ -1,0 +1,10 @@
+transaction: MB52
+name: Display Stock
+description: Display material stock overview
+
+header:
+  material: "100-100"
+  plant: "1000"
+
+options:
+  extract_document_number: false

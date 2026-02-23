@@ -1,0 +1,12 @@
+transaction: XK02
+name: Change Vendor
+description: Change existing vendor master
+
+header:
+  vendor: "1000"
+
+changes:
+  name: "Updated Vendor Name"
+
+options:
+  save_after_creation: true

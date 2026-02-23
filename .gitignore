@@ -1,0 +1,122 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables (NEVER COMMIT THESE)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+*.env
+
+# Credentials and secrets
+**/credentials.json
+**/secrets.json
+**/config/secrets.js
+**/config/secrets.ts
+**/.credentials
+*.key
+*.pem
+*.cert
+*.p12
+*.pfx
+api-keys.txt
+
+# Generated files
+*.json
+!package.json
+!tsconfig.json
+!test-suites/*.yaml
+
+# Generated reports
+reports/*
+!reports/.gitkeep
+*report*.html
+test-*.html
+suite-*.html
+
+# Build output
+dist/
+build/
+out/
+.next/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+logs/
+*.log.*
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Testing and Coverage
+test-results/
+playwright-report/
+playwright/.cache/
+.nyc_output/
+coverage/
+*.lcov
+
+# Chrome user data and browser profiles
+.chrome/
+.firefox/
+.safari/
+user-data-dir/
+browser-data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Downloaded files
+downloads/
+
+# Claude Code
+.claude/
+
+# Project specific
+search_results.json
+gaming-mouse-results.json
+paginated-results.json
+product-images.json
+ebay-research-*.json

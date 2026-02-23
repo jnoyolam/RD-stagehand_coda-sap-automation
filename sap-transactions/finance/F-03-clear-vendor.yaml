@@ -1,0 +1,11 @@
+transaction: F-03
+name: Display Document
+description: Display financial document
+
+header:
+  document_number: "1000000001"
+  company_code: "1000"
+  fiscal_year: "2025"
+
+options:
+  extract_document_number: false

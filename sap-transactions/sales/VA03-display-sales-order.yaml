@@ -1,0 +1,9 @@
+transaction: VA03
+name: Display Sales Order
+description: Display sales order details
+
+header:
+  sales_order: "1000000001"
+
+options:
+  extract_document_number: false

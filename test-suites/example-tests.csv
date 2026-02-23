@@ -1,0 +1,4 @@
+name,file,enabled,timeout
+"SAP Fiori - Login","examples/sap/01-fiori-login.ts",true,50000
+"SAP Fiori - Navigate","examples/sap/02-fiori-navigate-tile.ts",false,80000
+"SAP Fiori - Create Invoice","examples/sap/11-create-invoice.ts",false,100000

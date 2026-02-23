@@ -1,0 +1,22 @@
+transaction: FB50
+name: G/L Account Posting
+description: Post to general ledger
+
+header:
+  document_date: "31.12.2025"
+  posting_date: "31.12.2025"
+  document_type: "SA"
+  company_code: "1000"
+
+items:
+  - gl_account: "400000"
+    amount: "1000.00"
+    cost_center: "1000"
+    debit_credit: "D"
+  - gl_account: "113100"
+    amount: "1000.00"
+    debit_credit: "C"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

@@ -1,0 +1,9 @@
+transaction: ME23N
+name: Display Purchase Order
+description: Display purchase order details
+
+header:
+  purchase_order: "4500000001"
+
+options:
+  extract_document_number: false

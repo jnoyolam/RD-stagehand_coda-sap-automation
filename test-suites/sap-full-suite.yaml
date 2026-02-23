@@ -1,0 +1,47 @@
+name: "SAP Complete Test Suite"
+description: "Full automation test suite for SAP Fiori and WebGUI"
+
+tests:
+  # Fiori Tests
+  - name: "Fiori Login"
+    file: "examples/sap/01-fiori-login.ts"
+    enabled: true
+
+  - name: "Fiori Navigate to Tile"
+    file: "examples/sap/02-fiori-navigate-tile.ts"
+    enabled: true
+
+  - name: "Fiori Search and Navigate"
+    file: "examples/sap/03-fiori-search-navigate.ts"
+    enabled: true
+
+  - name: "Fiori Extract Table Data"
+    file: "examples/sap/04-fiori-extract-table.ts"
+    enabled: true
+
+  - name: "Fiori Filter and Sort Table"
+    file: "examples/sap/05-fiori-filter-table.ts"
+    enabled: true
+
+  # WebGUI Tests
+  - name: "WebGUI Login"
+    file: "examples/sap/06-webgui-login.ts"
+    enabled: true
+
+  - name: "WebGUI Execute Transaction"
+    file: "examples/sap/07-webgui-transaction.ts"
+    enabled: true
+
+  - name: "WebGUI Create Purchase Order"
+    file: "examples/sap/08-webgui-create-po.ts"
+    enabled: true
+
+  - name: "WebGUI Extract Table Data"
+    file: "examples/sap/09-webgui-extract-table.ts"
+    enabled: true
+
+  - name: "WebGUI Material Master Display"
+    file: "examples/sap/10-webgui-material-master.ts"
+    enabled: true
+
+reportFilename: "sap-complete-report.html"

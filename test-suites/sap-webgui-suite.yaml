@@ -1,0 +1,25 @@
+name: "SAP WebGUI Test Suite"
+description: "Automated tests for SAP GUI for HTML (WebGUI)"
+
+tests:
+  - name: "WebGUI Login"
+    file: "examples/sap/06-webgui-login.ts"
+    enabled: true
+
+  - name: "WebGUI Execute Transaction"
+    file: "examples/sap/07-webgui-transaction.ts"
+    enabled: true
+
+  - name: "WebGUI Create Purchase Order"
+    file: "examples/sap/08-webgui-create-po.ts"
+    enabled: true
+
+  - name: "WebGUI Extract Table Data"
+    file: "examples/sap/09-webgui-extract-table.ts"
+    enabled: true
+
+  - name: "WebGUI Material Master Display"
+    file: "examples/sap/10-webgui-material-master.ts"
+    enabled: true
+
+reportFilename: "sap-webgui-report.html"

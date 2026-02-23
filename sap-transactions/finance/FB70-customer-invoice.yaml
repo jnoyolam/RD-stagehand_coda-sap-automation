@@ -1,0 +1,13 @@
+transaction: FB70
+name: Enter Outgoing Invoice
+description: Post customer invoice
+
+header:
+  invoice_date: "31.12.2025"
+  posting_date: "31.12.2025"
+  customer: "1000"
+  amount: "1000.00"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

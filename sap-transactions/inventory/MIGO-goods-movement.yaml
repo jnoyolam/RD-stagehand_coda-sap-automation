@@ -1,0 +1,17 @@
+transaction: MIGO
+name: Goods Movement
+description: Post goods receipt or issue
+
+header:
+  movement_type: "101"
+  purchase_order: "4500000001"
+  posting_date: "31.12.2025"
+
+items:
+  - item_number: "1"
+    quantity: "10"
+    storage_location: "0001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

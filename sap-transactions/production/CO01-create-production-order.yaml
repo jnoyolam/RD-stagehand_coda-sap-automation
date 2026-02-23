@@ -1,0 +1,16 @@
+transaction: CO01
+name: Create Production Order
+description: Create new production order
+
+header:
+  order_type: "PP01"
+  material: "100-100"
+  plant: "1000"
+  quantity: "100"
+  unit: "EA"
+  start_date: "01.01.2026"
+  finish_date: "31.01.2026"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

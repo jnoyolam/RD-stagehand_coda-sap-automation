@@ -1,0 +1,15 @@
+transaction: IW31
+name: Create Maintenance Order
+description: Create maintenance order
+
+header:
+  order_type: "PM01"
+  equipment: "1000000001"
+  plant: "1000"
+
+description:
+  short_text: "Maintenance work description"
+
+options:
+  save_after_creation: true
+  extract_document_number: true

@@ -1,0 +1,25 @@
+name: "SAP Fiori Test Suite"
+description: "Automated tests for SAP Fiori applications"
+
+tests:
+  - name: "Fiori Login"
+    file: "examples/sap/01-fiori-login.ts"
+    enabled: true
+
+  - name: "Fiori Navigate to Tile"
+    file: "examples/sap/02-fiori-navigate-tile.ts"
+    enabled: true
+
+  - name: "Fiori Search and Navigate"
+    file: "examples/sap/03-fiori-search-navigate.ts"
+    enabled: true
+
+  - name: "Fiori Extract Table Data"
+    file: "examples/sap/04-fiori-extract-table.ts"
+    enabled: true
+
+  - name: "Fiori Filter and Sort Table"
+    file: "examples/sap/05-fiori-filter-table.ts"
+    enabled: true
+
+reportFilename: "sap-fiori-report.html"

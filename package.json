@@ -1,0 +1,61 @@
+{
+  "name": "stagehand-sap-automation",
+  "version": "1.0.0",
+  "description": "LLM-powered SAP automation framework with natural language commands - Supports SAP Fiori and SAP WebGUI",
+  "type": "module",
+  "scripts": {
+    "proxy": "npx tsx start-proxy.ts",
+    "test": "npx tsx run-test.ts",
+    "suite": "npx tsx run-suite.ts",
+    "csv": "npx tsx run-csv.ts",
+    "suite:fiori": "npx tsx run-suite.ts test-suites/sap-fiori-suite.yaml",
+    "suite:webgui": "npx tsx run-suite.ts test-suites/sap-webgui-suite.yaml",
+    "suite:all": "npx tsx run-suite.ts test-suites/sap-full-suite.yaml",
+    "csv:fiori": "npx tsx run-csv.ts test-suites/sap-fiori-suite.csv",
+    "csv:webgui": "npx tsx run-csv.ts test-suites/sap-webgui-suite.csv",
+    "fiori:login": "npx tsx examples/sap/01-fiori-login.ts",
+    "fiori:tile": "npx tsx examples/sap/02-fiori-navigate-tile.ts",
+    "fiori:search": "npx tsx examples/sap/03-fiori-search-navigate.ts",
+    "fiori:table": "npx tsx examples/sap/04-fiori-extract-table.ts",
+    "fiori:filter": "npx tsx examples/sap/05-fiori-filter-table.ts",
+    "webgui:login": "npx tsx examples/sap/06-webgui-login.ts",
+    "webgui:transaction": "npx tsx examples/sap/07-webgui-transaction.ts",
+    "webgui:create-po": "npx tsx examples/sap/08-webgui-create-po.ts",
+    "webgui:table": "npx tsx examples/sap/09-webgui-extract-table.ts",
+    "webgui:material": "npx tsx examples/sap/10-webgui-material-master.ts",
+    "yaml:execute": "npx tsx scripts/execute-yaml.ts",
+    "yaml:batch": "npx tsx scripts/batch-execute.ts",
+    "yaml:generate": "npx tsx scripts/generate-template.ts"
+  },
+  "keywords": [
+    "sap",
+    "sap-automation",
+    "sap-fiori",
+    "sap-webgui",
+    "sap-gui",
+    "ui5",
+    "erp",
+    "automation",
+    "testing",
+    "browser-automation",
+    "llm",
+    "playwright",
+    "stagehand",
+    "natural-language"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@browserbasehq/stagehand": "^2.0.0",
+    "@types/express": "^5.0.6",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "p-limit": "^7.2.0",
+    "yaml": "^2.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

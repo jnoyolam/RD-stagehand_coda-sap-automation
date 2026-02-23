@@ -1,0 +1,12 @@
+transaction: VF01
+name: Create Billing Document
+description: Create invoice from delivery
+
+header:
+  billing_type: "F2"
+  billing_date: "31.12.2025"
+  delivery: "8000000001"
+
+options:
+  save_after_creation: true
+  extract_document_number: true
