@@ -23,6 +23,7 @@
     "webgui:create-po": "npx tsx examples/sap/08-webgui-create-po.ts",
     "webgui:table": "npx tsx examples/sap/09-webgui-extract-table.ts",
     "webgui:material": "npx tsx examples/sap/10-webgui-material-master.ts",
+    "dummy:test": "npx tsx examples/sap/dummy_test.ts",
     "yaml:execute": "npx tsx scripts/execute-yaml.ts",
     "yaml:batch": "npx tsx scripts/batch-execute.ts",
     "yaml:generate": "npx tsx scripts/generate-template.ts"

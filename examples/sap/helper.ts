@@ -111,8 +111,9 @@ export class SAPAutomation {
 
     await this.retryManager.executeWithRetry(
       async () => {
-        const modelConfig = config.getModelConfig();
+        // const modelConfig = config.getModelConfig();
 
+        /*
         this.stagehand = new Stagehand({
           env: 'LOCAL',
           modelName: `openai/${modelConfig.model}`,
@@ -120,6 +121,14 @@ export class SAPAutomation {
             apiKey: modelConfig.apiKey,
             baseURL: modelConfig.baseURL
           },
+          verbose: 1,
+          enableCaching: false
+        });
+        */
+
+        this.stagehand = new Stagehand({
+          env: 'LOCAL',
+          modelName: 'deepseek/deepseek-chat',
           verbose: 1,
           enableCaching: false
         });
@@ -134,8 +143,8 @@ export class SAPAutomation {
 
             try {
               const screenSize = await page.evaluate(() => ({
-                width: 1720,
-                height: 880
+                width: 1520,
+                height: 680
               }));
               desiredViewport = screenSize;
             } catch (e) {
