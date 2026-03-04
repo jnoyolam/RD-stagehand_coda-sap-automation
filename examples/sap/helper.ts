@@ -111,9 +111,9 @@ export class SAPAutomation {
 
     await this.retryManager.executeWithRetry(
       async () => {
-        // const modelConfig = config.getModelConfig();
+        const modelConfig = config.getModelConfig();
 
-        /*
+        
         this.stagehand = new Stagehand({
           env: 'LOCAL',
           modelName: `openai/${modelConfig.model}`,
@@ -124,14 +124,16 @@ export class SAPAutomation {
           verbose: 1,
           enableCaching: false
         });
-        */
-
+        
+        
+        /*
         this.stagehand = new Stagehand({
           env: 'LOCAL',
           modelName: 'deepseek/deepseek-chat',
           verbose: 1,
           enableCaching: false
         });
+        */
 
         await this.stagehand.init();
         // Attempt to maximize browser viewport to full screen for better visibility

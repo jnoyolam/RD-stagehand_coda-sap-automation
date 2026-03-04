@@ -24,6 +24,7 @@
     "webgui:table": "npx tsx examples/sap/09-webgui-extract-table.ts",
     "webgui:material": "npx tsx examples/sap/10-webgui-material-master.ts",
     "dummy:test": "npx tsx examples/sap/dummy_test.ts",
+    "mcp:server": "npx tsx scripts/mcp-server.ts",
     "yaml:execute": "npx tsx scripts/execute-yaml.ts",
     "yaml:batch": "npx tsx scripts/batch-execute.ts",
     "yaml:generate": "npx tsx scripts/generate-template.ts"
@@ -49,6 +50,7 @@
   "dependencies": {
     "@browserbasehq/stagehand": "^2.0.0",
     "@types/express": "^5.0.6",
+    "multer": "1.4.4",
     "dotenv": "^16.4.5",
     "express": "^5.2.1",
     "p-limit": "^7.2.0",
@@ -56,6 +58,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "@types/multer": "1.4.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

@@ -1,0 +1,7 @@
+tunnel: mcp-tunnel
+credentials-file: ~/.cloudflared/a8c06369-97be-4946-a46c-166e9a19471f.json  # Replace <tunnel-id> with the actual tunnel ID from the 'cloudflared tunnel create' command output
+
+ingress:
+  - hostname: stagehand-sap.work
+  - service: http://localhost:3005
+  - service: http_status:404

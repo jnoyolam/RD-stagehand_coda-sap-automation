@@ -6,8 +6,8 @@ export const config = {
   // CODA GEAI Configuration (usando ~/.coda/.env con gpt-4o)
   codaApiKey: process.env.CODA_GEAI_API_KEY || '',
   codaBaseUrl: process.env.CODA_GEAI_BASE_URL || 'https://api.beta.saia.ai',
-  codaModel: process.env.CODA_MODEL || 'gemini-2.0-flash',
-  codaProvider: process.env.CODA_PROVIDER || 'google',
+  codaModel: process.env.CODA_MODEL,
+  codaProvider: process.env.CODA_PROVIDER,
 
   // Proxy local (para agregar prefijo del provider al modelo)
   proxyUrl: process.env.PROXY_URL || 'http://localhost:3456',
