@@ -63,7 +63,7 @@ app.post('/chat/completions', async (req, res) => {
   console.log(`[PROXY] [${requestId}] 📨 New request received`);
   console.log(`[PROXY] [${requestId}] Model: ${req.body.model}`);
   console.log(`[PROXY] [${requestId}] Request timeout: ${config.proxy.requestTimeout}ms`);
-  console.log(`[PROXY] [${requestId}] Base URL: ${config.codaBaseUrl}`);
+  console.log(`[PROXY] [${requestId}] Azure Endpoint: ${config.azureOpenAiEndpoint}`);
   console.log(`[PROXY] [${requestId}] Body size: ${JSON.stringify(req.body).length} bytes`);
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -71,11 +71,11 @@ app.post('/chat/completions', async (req, res) => {
     try {
       console.log(`[PROXY] [${requestId}] Attempt ${attempt}/${maxRetries} - Model: ${req.body.model}`);
 
-      // Add provider prefix if not present
+      // Add deployment name if not present
       let model = req.body.model;
       if (!model.includes('/')) {
-        model = `${config.codaProvider}/${model}`;
-        console.log(`[PROXY] [${requestId}] Modified model to: ${model}`);
+        model = config.azureOpenAiDeployment;
+        console.log(`[PROXY] [${requestId}] Using Azure deployment: ${model}`);
       }
 
       const modifiedBody = {
@@ -94,13 +94,14 @@ app.post('/chat/completions', async (req, res) => {
       );
 
       try {
-        console.log(`[PROXY] [${requestId}] 🚀 Sending request to ${config.codaBaseUrl}/chat/completions`);
+        console.log(`[PROXY] [${requestId}] 🚀 Sending request to Azure OpenAI`);
         
-        const response = await fetch(`${config.codaBaseUrl}/chat/completions`, {
+        const azureUrl = `${config.azureOpenAiEndpoint}/deployments/${model}/chat/completions?api-version=${config.azureOpenAiApiVersion}`;
+        const response = await fetch(azureUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config.codaApiKey}`
+            'api-key': config.azureOpenAiApiKey
           },
           body: JSON.stringify(modifiedBody),
           signal: controller.signal
@@ -114,7 +115,7 @@ app.post('/chat/completions', async (req, res) => {
 
         if (!response.ok) {
           throw new Error(
-            `CODA API error: ${response.status} - ${JSON.stringify(data)}`
+            `Azure OpenAI API error: ${response.status} - ${JSON.stringify(data)}`
           );
         }
 
@@ -236,17 +237,17 @@ const PORT = config.proxyPort;
 const server = app.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
-║  CODA GEAI Proxy Server Running                           ║
+║  Azure OpenAI Proxy Server Running                        ║
 ║  Port: ${PORT}                                               ║
-║  Target: ${config.codaBaseUrl}                   ║
-║  Provider: ${config.codaProvider}                                         ║
+║  Target: ${config.azureOpenAiEndpoint}         ║
+║  Deployment: ${config.azureOpenAiDeployment}                                         ║
 ║  Health: http://localhost:${PORT}/health                     ║
 ║                                                           ║
 ║  Features:                                                ║
 ║  • Automatic retry with exponential backoff               ║
 ║  • Circuit breaker pattern                                ║
 ║  • Health monitoring                                      ║
-║  • Model transformation: gpt-4o → openai/gpt-4o           ║
+║  • Azure OpenAI API integration                           ║
 ╚═══════════════════════════════════════════════════════════╝
   `);
 });

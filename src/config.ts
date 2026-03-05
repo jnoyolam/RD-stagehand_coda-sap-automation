@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  // CODA GEAI Configuration (usando ~/.coda/.env con gpt-4o)
-  codaApiKey: process.env.CODA_GEAI_API_KEY || '',
-  codaBaseUrl: process.env.CODA_GEAI_BASE_URL || 'https://api.beta.saia.ai',
-  codaModel: process.env.CODA_MODEL,
-  codaProvider: process.env.CODA_PROVIDER,
+  // Azure OpenAI Configuration
+  azureOpenAiEndpoint: process.env.AZURE_OPENAI_ENDPOINT || 'https://genaiapimna.jnj.com/openai-chat',
+  azureOpenAiApiKey: process.env.AZURE_OPENAI_API_KEY || '76cf7f1a70af43e98c530f172887fac4',
+  azureOpenAiDeployment: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o',
+  azureOpenAiApiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-10-21',
 
   // Proxy local (para agregar prefijo del provider al modelo)
   proxyUrl: process.env.PROXY_URL || 'http://localhost:3456',
@@ -50,8 +50,11 @@ export const config = {
 
   // Validate required configuration
   validate() {
-    if (!this.codaApiKey) {
-      throw new Error('Missing CODA_GEAI_API_KEY in .env file');
+    if (!this.azureOpenAiApiKey) {
+      throw new Error('Missing AZURE_OPENAI_API_KEY in .env file');
+    }
+    if (!this.azureOpenAiEndpoint) {
+      throw new Error('Missing AZURE_OPENAI_ENDPOINT in .env file');
     }
 
     // Validate numeric configurations
@@ -66,11 +69,9 @@ export const config = {
   // Get model configuration for Stagehand
   getModelConfig() {
     return {
-      // Si usamos proxy, enviar modelo sin prefijo (el proxy lo agrega)
-      // Si no usamos proxy, enviar con prefijo
-      model: this.useProxy ? this.codaModel : `${this.codaProvider}/${this.codaModel}`,
-      apiKey: this.codaApiKey,
-      baseURL: this.useProxy ? this.proxyUrl : this.codaBaseUrl
+      model: this.azureOpenAiDeployment,
+      apiKey: this.azureOpenAiApiKey,
+      baseURL: this.useProxy ? this.proxyUrl : this.azureOpenAiEndpoint
     };
   }
 };

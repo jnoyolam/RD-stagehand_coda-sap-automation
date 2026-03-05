@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "proxy": "npx tsx start-proxy.ts",
+    "proxy:jnj": "npx tsx start-proxy-jnj.ts",
     "test": "npx tsx run-test.ts",
     "suite": "npx tsx run-suite.ts",
     "csv": "npx tsx run-csv.ts",
