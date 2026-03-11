@@ -368,7 +368,7 @@ export class SAPAutomation {
    * Login to SAP system
    * Works for both Fiori and WebGUI
    */
-  async login(username: string, password: string) {
+  async login(username: string) {
     console.log(`Logging into SAP as: ${username}`);
 
     // Navigate to login page if needed
@@ -376,8 +376,12 @@ export class SAPAutomation {
 
     // Enter credentials - LLM will detect login form type
     await this.act(`type "${username}" in the username field`);
-    await this.act(`type "${password}" in the password field`);
+    // await this.act(`type "${password}" in the password field`);
+    
+    await this.act("Click the next button");
+    
     /*
+
     // Enter client if provided
     if (this.sapConfig.client) {
       await this.act(`type "${this.sapConfig.client}" in the client field`);

@@ -68,6 +68,7 @@ logs/
 .settings/
 *.sublime-workspace
 .history/
+.vs
 
 # OS files
 .DS_Store

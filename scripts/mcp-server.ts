@@ -41,8 +41,10 @@ dotenv.config();
   const sap = new SAPFioriAutomation({ baseUrl: '${data.url}', client: '100', language: 'EN' });
   try {
     await sap.initialize();
-    await sap.login(process.env.SAP_USERNAME!, process.env.SAP_PASSWORD!);
+    await sap.login(process.env.SAP_USERNAME!);
+
     console.log('✅ Successfully logged into SAP Fiori Launchpad');
+    await sap.act('Open the UMS Fiori');
 `;
 
   let stepsCode = '';

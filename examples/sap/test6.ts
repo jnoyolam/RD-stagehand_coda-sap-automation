@@ -11,13 +11,13 @@ dotenv.config();
 
 async function test6() {
   console.log('🚀 Running generated test "Test6"');
-  const sap = new SAPFioriAutomation({ baseUrl: 'https://ec2-184-73-255-6.compute-1.amazonaws.com:44300/sap/bc/ui2/flp?_sap-hash=JTIzU2hlbGwtaG9tZQ#Shell-home', client: '100', language: 'EN' });
+  const sap = new SAPFioriAutomation({ baseUrl: 'https://erp.jnj.com/', client: '100', language: 'EN' });
   try {
     await sap.initialize();
-    await sap.login(process.env.SAP_USERNAME!, process.env.SAP_PASSWORD!);
+    await sap.login(process.env.SAP_USERNAME!);
 
     console.log('✅ Successfully logged into SAP Fiori Launchpad');
-    await sap.act(`https://ec2-184-73-255-6.compute-1.amazonaws.com:44300/sap/bc/ui2/flp?_sap-hash=JTIzU2hlbGwtaG9tZQ#Shell-home`);
+    await sap.act('Open the UMS Fiori');
 
     console.log('✅ Test Test6 completed');
     await new Promise(resolve => setTimeout(resolve, 5000));

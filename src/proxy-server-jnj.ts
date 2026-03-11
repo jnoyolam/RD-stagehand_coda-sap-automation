@@ -116,7 +116,7 @@ app.post('/chat/completions', async (req, res) => {
       // client requested (Stagehand may send "openai/gpt-4o" or similar).
       const deployment = JNJ_CONFIG.deployment;
 
-      const azureUrl = `${JNJ_CONFIG.azureEndpoint}/deployments/${deployment}/chat/completions?api-version=${JNJ_CONFIG.apiVersion}`;
+      const azureUrl = `${JNJ_CONFIG.azureEndpoint}/openai/deployments/${deployment}/chat/completions?api-version=${JNJ_CONFIG.apiVersion}`;
 
       // Build the forwarded body – override model with the deployment name
       const forwardedBody = {
