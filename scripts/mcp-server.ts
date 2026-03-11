@@ -145,7 +145,10 @@ app.post('/upload-data', (req, res) => {
 
   busy = true;
   console.log('Starting child process to run', scriptPath);
-  const child = spawn('npm', ['run test', scriptPath], { shell: true, stdio: 'inherit' });
+
+  // Use explicit npm args and avoid shell splitting to preserve spaces in paths.
+  // This pattern also supports script argument forwarding: npm run test -- <scriptPath>
+  const child = spawn('npm', ['run', 'test', '--', scriptPath], { stdio: 'inherit' });
 
   child.on('exit', (code, signal) => {
     console.log(`Child process exited with code=${code} signal=${signal}`);
