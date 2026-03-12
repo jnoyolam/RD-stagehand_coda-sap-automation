@@ -625,15 +625,28 @@ export class ReportGenerator {
     `;
   }
 
-  saveReport(filename: string = `report-${Date.now()}.html`) {
+  saveReport(filename?: string) {
     const html = this.generateHTML();
 
-    // Create reports directory if it doesn't exist
-    if (!existsSync('reports')) {
-      mkdirSync('reports', { recursive: true });
-    }
+    // Build timestamped directory: reports/YYYYMMDD_HHmmss/
+    const now = new Date();
+    const ts = now.getFullYear().toString()
+      + String(now.getMonth() + 1).padStart(2, '0')
+      + String(now.getDate()).padStart(2, '0')
+      + '_'
+      + String(now.getHours()).padStart(2, '0')
+      + String(now.getMinutes()).padStart(2, '0')
+      + String(now.getSeconds()).padStart(2, '0');
 
-    const reportPath = `reports/${filename}`;
+    const dirPath = `reports/${ts}`;
+    mkdirSync(dirPath, { recursive: true });
+
+    // Derive file name: test_name_timestamp.html
+    const reportFileName = filename
+      ? filename.replace(/\.html$/, '') + `_${ts}.html`
+      : `report_${ts}.html`;
+
+    const reportPath = `${dirPath}/${reportFileName}`;
     writeFileSync(reportPath, html);
     console.log(`\n📊 Report saved: ${reportPath}`);
     return reportPath;

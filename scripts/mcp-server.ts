@@ -30,6 +30,7 @@ function generateScript(data: any) {
  */\n\n`;
 
   const imports = `import { SAPFioriAutomation } from './helper.js';
+import { TestWrapper } from '../../src/test-wrapper.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -38,28 +39,40 @@ dotenv.config();
 
   const bodyStart = `async function ${funcName}() {
   console.log('🚀 Running generated test "${testName}"');
+  const wrapper = new TestWrapper('${testName}');
+  wrapper.startTest('${testName}');
   const sap = new SAPFioriAutomation({ baseUrl: '${data.url}', client: '100', language: 'EN' });
+  let testStatus: 'passed' | 'failed' = 'passed';
   try {
-    await sap.initialize();
-    await sap.login(process.env.SAP_USERNAME!);
-    await sap.waitForFullPageLoad();
-    const pageTitle = await sap.getPageTitle();
-    if (pageTitle !== 'ERP Launchpad') {
-      throw new Error('Expected page title "ERP Launchpad" but got: ", pageTitle);
-    }
-    else {
-      console.log('✅ Successfully logged into ERP Launchpad');
-    }
+    await wrapper.timeStep('Initialize', 'Initialize SAP Automation', async () => {
+      await sap.initialize();
+    });
 
-    await sap.act('Open the UMS Fiori');
-    await sap.waitForFullPageLoad();
-    const fioriPageTitle = await sap.getPageTitle();
-    if (fioriPageTitle !== 'ERP Launchpad') {
-      throw new Error('Expected page title "ERP Launchpad" but got: ", fioriPageTitle);
-    }
-    else {
+    await wrapper.timeStep('Login', 'Login to SAP system', async () => {
+      await sap.login(process.env.SAP_USERNAME!);
+      await sap.waitForFullPageLoad();
+    });
+
+    await wrapper.timeStep('Verify Login', 'Verify ERP Launchpad loaded', async () => {
+      const pageTitle = await sap.getPageTitle();
+      if (pageTitle !== 'ERP Launchpad') {
+        throw new Error('Expected page title "ERP Launchpad" but got: ' + pageTitle);
+      }
+      console.log('✅ Successfully logged into ERP Launchpad');
+    });
+
+    await wrapper.timeStep('Open UMS Fiori', 'Navigate to UMS Fiori', async () => {
+      await sap.act('Open the UMS Fiori');
+      await sap.waitForFullPageLoad();
+    });
+
+    await wrapper.timeStep('Verify UMS Fiori', 'Verify UMS Fiori page loaded', async () => {
+      const fioriPageTitle = await sap.getPageTitle();
+      if (fioriPageTitle !== 'Home') {
+        throw new Error('Expected page title "Home" but got: ' + fioriPageTitle);
+      }
       console.log('✅ Successfully opened UMS Fiori');
-    }
+    });
 `;
 
   let stepsCode = '';
@@ -69,49 +82,70 @@ dotenv.config();
       // normalize instruction and data
       const instr = (step.instruction || '').replace(/`/g, '\\`');
       const expectedResult = (step.expectedResult || '').replace(/`/g, '\\`');
+      const stepLabel = `Step ${index + 1}: ${action}`;
+      const stepDesc = instr || action;
 
-      stepsCode += `\n    // Step ${index + 1}: ${action} - ${instr}\n`;
-
+      // Build the action call
+      let actionCall = '';
       switch (action) {
         case 'searchAndNavigate':
-          stepsCode += `    await sap.searchAndNavigate(\`${instr}\`);\n`;
+          actionCall = `await sap.searchAndNavigate(\`${instr}\`);`;
           break;
         case 'navigateToTile':
-          stepsCode += `    await sap.navigateToTile(\`${instr}\`);\n`;
+          actionCall = `await sap.navigateToTile(\`${instr}\`);`;
           break;
         case 'act':
-          stepsCode += `    await sap.act(\`${instr}\`);\n`;
+          actionCall = `await sap.act(\`${instr}\`);`;
           break;
         case 'extract':
-          stepsCode += `    await sap.extract(\`${instr}\`);\n`;
+          actionCall = `await sap.extract(\`${instr}\`);`;
           break;
-        case 'keyboardType':
+        case 'keyboardType': {
           const text = step.data ? String(step.data).replace(/`/g, '\\`') : instr;
           const opts = step.options ? JSON.stringify(step.options) : '{}';
-          stepsCode += `    await sap.keyboardType(\`${text}\`, ${opts});\n`;
+          actionCall = `await sap.keyboardType(\`${text}\`, ${opts});`;
           break;
+        }
         default:
-          stepsCode += `    // unsupported action: ${action} - raw instruction: \`${instr}\`\n`;
+          actionCall = `// unsupported action: ${action} - raw instruction: \`${instr}\``;
       }
 
-      // Wait for full page load after every step before proceeding
-      stepsCode += `    await sap.waitForFullPageLoad();\n`;
+      // Wrap in timeStep for tracking + add waitForFullPageLoad + expectedResult verification
+      stepsCode += `\n    await wrapper.timeStep('${stepLabel}', \`${stepDesc}\`, async () => {
+      ${actionCall}
+      await sap.waitForFullPageLoad();`;
 
-      // If expectedResult is provided, verify it after the step completes
       if (expectedResult) {
-        stepsCode += `    await sap.verifyExpectedResult(\`${expectedResult}\`);\n`;
+        stepsCode += `\n      await sap.verifyExpectedResult(\`${expectedResult}\`);`;
       }
+
+      stepsCode += `\n    });\n`;
     });
   }
 
   const footer = `
     console.log('✅ Test ${testName} completed');
-    await new Promise(resolve => setTimeout(resolve, 5000));
-  } catch (error) {
+  } catch (error: any) {
+    testStatus = 'failed';
     console.error('❌ Error:', error);
-    process.exit(1);
+    wrapper.logStep('Error', error.message || String(error), 'failure', { error: error.stack });
   } finally {
-    await sap.cleanup();
+    // Always end the test and generate a report, regardless of success or failure
+    wrapper.endTest(testStatus);
+
+    try {
+      await sap.cleanup();
+    } catch (cleanupErr: any) {
+      console.warn('⚠️ Cleanup error:', cleanupErr?.message || cleanupErr);
+    }
+
+    const reportFile = '${safe}';
+    const reportPath = wrapper.generateReport(reportFile);
+    console.log('📊 Report generated at:', reportPath);
+
+    if (testStatus === 'failed') {
+      process.exit(1);
+    }
   }
 }
 
@@ -174,19 +208,7 @@ app.post('/upload-data', (req, res) => {
   busy = true;
   console.log('Starting child process to run', scriptPath);
 
-  // Run tsx directly through node to avoid npm argument splitting (spaces in path issue).
-  const tsxCli = path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs');
-  if (!fs.existsSync(tsxCli)) {
-    console.error('tsx CLI not found at', tsxCli, '; falling back to npm run test');
-  }
-
-  const child = spawn(
-    process.execPath,
-    fs.existsSync(tsxCli)
-      ? [tsxCli, 'run-test.ts', scriptPath]
-      : ['npx', 'tsx', 'run-test.ts', scriptPath],
-    { stdio: 'inherit' }
-  );
+  const child = spawn('npm', ['run test', scriptPath], {shell: true, stdio: 'inherit'});
 
   child.on('exit', (code, signal) => {
     console.log(`Child process exited with code=${code} signal=${signal}`);

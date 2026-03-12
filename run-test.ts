@@ -95,8 +95,7 @@ async function runSingleTest() {
     }
 
     // Generate report AFTER test and cleanup are complete
-    const reportFile = `test-${testName}-${Date.now()}.html`;
-    wrapper.generateReport(reportFile);
+    wrapper.generateReport(`test-${testName}`);
   }
 }
 
