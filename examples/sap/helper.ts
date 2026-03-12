@@ -559,6 +559,16 @@ async keyboardType(text: string, options?: { times?: number }) {
   }
 
   /**
+   * Get the current page title
+   */
+  async getPageTitle(): Promise<string> {
+    if (!this.stagehand || !this.stagehand.page) {
+      throw new Error('SAP Automation not initialized');
+    }
+    return this.stagehand.page.title();
+  }
+
+  /**
    * Get Playwright page instance
    */
   get page(): Page {

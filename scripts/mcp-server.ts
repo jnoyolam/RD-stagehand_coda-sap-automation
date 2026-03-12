@@ -45,7 +45,7 @@ dotenv.config();
     await sap.waitForFullPageLoad();
     const pageTitle = await sap.getPageTitle();
     if (pageTitle !== 'ERP Launchpad') {
-      throw new Error('Expected page title \'ERP Launchpad\' but got \'' + pageTitle + '\'');
+      throw new Error('Expected page title "ERP Launchpad" but got: ", pageTitle);
     }
     else {
       console.log('✅ Successfully logged into ERP Launchpad');
@@ -55,7 +55,7 @@ dotenv.config();
     await sap.waitForFullPageLoad();
     const fioriPageTitle = await sap.getPageTitle();
     if (fioriPageTitle !== 'ERP Launchpad') {
-      throw new Error('Expected page title \'ERP Launchpad\' but got \'' + fioriPageTitle + '\'');
+      throw new Error('Expected page title "ERP Launchpad" but got: ", fioriPageTitle);
     }
     else {
       console.log('✅ Successfully opened UMS Fiori');
