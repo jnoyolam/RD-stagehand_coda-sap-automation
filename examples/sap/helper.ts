@@ -301,6 +301,101 @@ export class SAPAutomation {
   }
 
   /**
+   * Wait for the page to be fully loaded with no pending resources.
+   * Waits for: network idle, SAP busy indicators, and document.readyState === 'complete'.
+   * Use this between instructions to prevent race conditions and timeout crashes.
+   */
+  async waitForFullPageLoad(timeoutMs?: number) {
+    if (!this.stagehand || !this.stagehand.page) {
+      throw new Error('SAP Automation not initialized');
+    }
+
+    const page = this.stagehand.page;
+    const timeout = timeoutMs ?? this.smartWaits['config'].timeout;
+
+    console.log('⏳ Waiting for full page load...');
+
+    // 1. Wait for document.readyState === 'complete'
+    try {
+      await page.waitForFunction(
+        `() => document.readyState === 'complete'`,
+        { timeout }
+      );
+    } catch {
+      console.warn('⚠️  document.readyState did not reach "complete" in time');
+    }
+
+    // 2. Wait for network idle (no pending requests for 500ms)
+    try {
+      await page.waitForLoadState('networkidle', { timeout: Math.min(timeout, 15000) });
+    } catch {
+      console.warn('⚠️  Network did not reach idle state — continuing');
+    }
+
+    // 3. Wait for SAP-specific busy indicators to disappear
+    if (this.sapConfig.enableSAPWaits) {
+      await this.waitForSAPReady();
+    }
+
+    // 4. Wait for no active XHR/fetch requests (extra check for SPAs)
+    try {
+      await page.waitForFunction(
+        `() => {
+          // Check for active XMLHttpRequest
+          if (window.__sapActiveRequests && window.__sapActiveRequests > 0) return false;
+          // Check for SAP UI5 pending requests
+          if (typeof sap !== 'undefined' && sap.ui && sap.ui.getCore) {
+            try {
+              const core = sap.ui.getCore();
+              if (core && core.getUIDirty && core.getUIDirty()) return false;
+            } catch(e) {}
+          }
+          return true;
+        }`,
+        { timeout: Math.min(timeout, 10000) }
+      );
+    } catch {
+      // Best effort — continue if this check times out
+    }
+
+    // 5. Small stabilization delay for any animations/transitions to settle
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    console.log('✅ Full page load complete');
+  }
+
+  /**
+   * Verify an expected result on the page using natural language.
+   * Returns true if verification passes, throws if it fails.
+   */
+  async verifyExpectedResult(expectedResult: string): Promise<boolean> {
+    if (!this.stagehand || !this.stagehand.page) {
+      throw new Error('SAP Automation not initialized');
+    }
+
+    console.log(`🔍 Verifying: ${expectedResult}`);
+
+    const result = await this.stagehand!.page.extract({
+      instruction: expectedResult,
+      schema: z.object({
+        passed: z.boolean().describe('Whether the verification passed'),
+        details: z.string().describe('Details about what was found on the page')
+      }) as any,
+      iframes: true
+    });
+
+    const verification = result as any;
+    if (verification.passed) {
+      console.log(`✅ Verification passed: ${verification.details}`);
+    } else {
+      console.error(`❌ Verification failed: ${verification.details}`);
+      throw new Error(`Expected result not met: "${expectedResult}" — ${verification.details}`);
+    }
+
+    return verification.passed;
+  }
+
+  /**
    * Extract data from SAP with schema validation
    */
   async extract<T>(instruction: string, schema: z.ZodSchema<T>): Promise<T> {

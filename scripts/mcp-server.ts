@@ -49,13 +49,17 @@ dotenv.config();
 
   let stepsCode = '';
   if (Array.isArray(data.steps)) {
-    data.steps.forEach((step: any) => {
+    data.steps.forEach((step: any, index: number) => {
       const action = step.action || 'act';
       // normalize instruction and data
       const instr = (step.instruction || '').replace(/`/g, '\\`');
+      const expectedResult = (step.expectedResult || '').replace(/`/g, '\\`');
+
+      stepsCode += `\n    // Step ${index + 1}: ${action} - ${instr}\n`;
+
       switch (action) {
         case 'searchAndNavigate':
-          stepsCode += `    await sap.searchAndNavigate(\`${instr}\`);\n`;;
+          stepsCode += `    await sap.searchAndNavigate(\`${instr}\`);\n`;
           break;
         case 'navigateToTile':
           stepsCode += `    await sap.navigateToTile(\`${instr}\`);\n`;
@@ -64,17 +68,23 @@ dotenv.config();
           stepsCode += `    await sap.act(\`${instr}\`);\n`;
           break;
         case 'extract':
-          // user may provide variable name to capture
           stepsCode += `    await sap.extract(\`${instr}\`);\n`;
           break;
         case 'keyboardType':
-          // text may be in step.data or instruction
           const text = step.data ? String(step.data).replace(/`/g, '\\`') : instr;
           const opts = step.options ? JSON.stringify(step.options) : '{}';
           stepsCode += `    await sap.keyboardType(\`${text}\`, ${opts});\n`;
           break;
         default:
           stepsCode += `    // unsupported action: ${action} - raw instruction: \`${instr}\`\n`;
+      }
+
+      // Wait for full page load after every step before proceeding
+      stepsCode += `    await sap.waitForFullPageLoad();\n`;
+
+      // If expectedResult is provided, verify it after the step completes
+      if (expectedResult) {
+        stepsCode += `    await sap.verifyExpectedResult(\`${expectedResult}\`);\n`;
       }
     });
   }
