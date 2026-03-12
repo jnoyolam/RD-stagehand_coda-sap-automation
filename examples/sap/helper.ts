@@ -576,11 +576,25 @@ async keyboardType(text: string, options?: { times?: number }) {
   /**
    * Get the current page title
    */
-  async getPageTitle(): Promise<string> {
+  async getPageTitle(retries = 3, delayMs = 2000): Promise<string> {
     if (!this.stagehand || !this.stagehand.page) {
       throw new Error('SAP Automation not initialized');
     }
-    return this.stagehand.page.title();
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        return await this.stagehand.page.title();
+      } catch (err: any) {
+        const isContextDestroyed = err.message?.includes('Execution context was destroyed');
+        if (isContextDestroyed && attempt < retries) {
+          console.warn(`⚠️ getPageTitle attempt ${attempt}/${retries} failed (navigation in progress). Retrying in ${delayMs}ms...`);
+          await new Promise(r => setTimeout(r, delayMs));
+          await this.stagehand.page.waitForLoadState('domcontentloaded').catch(() => {});
+        } else {
+          throw err;
+        }
+      }
+    }
+    return await this.stagehand.page.title();
   }
 
   /**
