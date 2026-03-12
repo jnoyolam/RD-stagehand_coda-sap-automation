@@ -287,7 +287,7 @@ export class SAPAutomation {
 
     await this.retryManager.executeWithRetry(
       async () => {
-        const res: any = await this.stagehand!.page.act({ action: instruction, iframes: true });
+        const res: any = await this.stagehand!.page.act({ action: instruction, iframes: true, useAccessibilityTree: true });
 
         // Wait for SAP to process the action
         if (this.sapConfig.enableSAPWaits) {
@@ -464,7 +464,7 @@ export class SAPAutomation {
 
     const result = await this.retryManager.executeWithRetry(
       async () => {
-        const res: any = await this.stagehand!.page.observe({ instruction, iframes: true });
+        const res: any = await this.stagehand!.page.observe({ instruction, iframes: true, useAccessibilityTree: true });
 
         return res;
       },

@@ -168,6 +168,11 @@ dotenv.config();
           actionCall = `await sap.keyboardType(\`${instr}\`, { times: ${times} });`;
           break;
         }
+        case 'wait': {
+          const secs = step.data ? Number(step.data) : 1;
+          actionCall = `console.log('⏳ Waiting ${secs}s...');\n      await new Promise(r => setTimeout(r, ${secs * 1000}));`;
+          break;
+        }
         default:
           actionCall = `// unsupported action: ${action} - raw instruction: \`${instr}\``;
       }
