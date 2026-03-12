@@ -84,7 +84,7 @@ dotenv.config();
     });
 
     await wrapper.timeStep('Open UMS Fiori', 'Navigate to UMS Fiori', async () => {
-      await sap.act('Open the UMS Fiori');
+      await sap.act('Click on the Open button for UMS - FIORI');
       await sap.waitForFullPageLoad();
     });
 
