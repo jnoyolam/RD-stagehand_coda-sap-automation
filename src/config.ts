@@ -32,7 +32,7 @@ export const config = {
   waits: {
     timeout: parseInt(process.env.WAIT_TIMEOUT || '30000', 10),
     pollInterval: parseInt(process.env.WAIT_POLL_INTERVAL || '100', 10),
-    networkIdleTimeout: parseInt(process.env.WAIT_NETWORK_IDLE_TIMEOUT || '2000', 10)
+    networkIdleTimeout: parseInt(process.env.WAIT_NETWORK_IDLE_TIMEOUT || '6000', 10)
   },
 
   // Test Suite Configuration

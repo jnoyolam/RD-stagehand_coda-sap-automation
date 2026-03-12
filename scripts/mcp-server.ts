@@ -54,6 +54,9 @@ dotenv.config();
       // normalize instruction and data
       const instr = (step.instruction || '').replace(/`/g, '\\`');
       switch (action) {
+        case 'searchAndNavigate':
+          stepsCode += `    await sap.searchAndNavigate(\`${instr}\`);\n`;;
+          break;
         case 'navigateToTile':
           stepsCode += `    await sap.navigateToTile(\`${instr}\`);\n`;
           break;
@@ -146,9 +149,19 @@ app.post('/upload-data', (req, res) => {
   busy = true;
   console.log('Starting child process to run', scriptPath);
 
-  // Use explicit npm args and avoid shell splitting to preserve spaces in paths.
-  // This pattern also supports script argument forwarding: npm run test -- <scriptPath>
-  const child = spawn('npm', ['run', 'test', '--', scriptPath], { stdio: 'inherit' });
+  // Run tsx directly through node to avoid npm argument splitting (spaces in path issue).
+  const tsxCli = path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs');
+  if (!fs.existsSync(tsxCli)) {
+    console.error('tsx CLI not found at', tsxCli, '; falling back to npm run test');
+  }
+
+  const child = spawn(
+    process.execPath,
+    fs.existsSync(tsxCli)
+      ? [tsxCli, 'run-test.ts', scriptPath]
+      : ['npx', 'tsx', 'run-test.ts', scriptPath],
+    { stdio: 'inherit' }
+  );
 
   child.on('exit', (code, signal) => {
     console.log(`Child process exited with code=${code} signal=${signal}`);

@@ -242,6 +242,7 @@ export class SAPAutomation {
 
     try {
       // Wait for DOM to be loaded
+      console.log("Timout value is: ", this.smartWaits['config'].timeout)
       await page.waitForLoadState('domcontentloaded', {
         timeout: this.smartWaits['config'].timeout
       });
@@ -263,7 +264,7 @@ export class SAPAutomation {
 
           return true;
         }`,
-        { timeout: 8000 }
+        { timeout: 10000 }
       ).catch(() => {
         // Continue if busy indicators not found or timeout
       });
