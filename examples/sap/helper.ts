@@ -499,12 +499,12 @@ export class SAPAutomation {
     }
     */
     // Enter language if needed
-    if (this.sapConfig.language) {
-      await this.act(`type "${this.sapConfig.language}" in the language field`);
-    }
+    // if (this.sapConfig.language) {
+    //  await this.act(`type "${this.sapConfig.language}" in the language field`);
+    //}
 
     // Submit login
-    await this.act('click the login button');
+    // await this.act('click the login button');
 
     // Wait for successful login
     if (this.sapConfig.enableSAPWaits) {

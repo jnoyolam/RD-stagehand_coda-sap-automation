@@ -134,6 +134,11 @@ dotenv.config();
         case 'extract':
           actionCall = `await sap.extract(\`${instr}\`);`;
           break;
+        case 'keyboard': {
+          const times = step.data ? Number(step.data) : 1;
+          actionCall = `await sap.keyboard(\`${instr}\`, { times: ${times} });`;
+          break;
+        }
         case 'keyboardType': {
           const text = step.data ? String(step.data).replace(/`/g, '\\`') : instr;
           const opts = step.options ? JSON.stringify(step.options) : '{}';
