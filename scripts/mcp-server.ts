@@ -140,9 +140,8 @@ dotenv.config();
           break;
         }
         case 'keyboardType': {
-          const text = step.data ? String(step.data).replace(/`/g, '\\`') : instr;
-          const opts = step.options ? JSON.stringify(step.options) : '{}';
-          actionCall = `await sap.keyboardType(\`${text}\`, ${opts});`;
+          const times = step.data ? Number(step.data) : 1;
+          actionCall = `await sap.keyboardType(\`${instr}\`, { times: ${times} });`;
           break;
         }
         default:
