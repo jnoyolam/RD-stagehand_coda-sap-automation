@@ -443,13 +443,14 @@ export class SAPAutomation {
    */
   async extractText(instruction: string, schema?: any): Promise<string> {
 
-    const result = await this.stagehand!.page.extract({
+    const result: any = await this.stagehand!.page.extract({
       instruction,
       schema: schema as any,
       iframes: true
     });
 
-    return result.text;
+    // Stagehand may return the value as .text, .extraction, or .progress depending on context
+    return result.text || result.extraction || result.progress || '';
   }
 
   /**
