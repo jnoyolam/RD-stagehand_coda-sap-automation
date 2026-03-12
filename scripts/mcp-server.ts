@@ -140,7 +140,17 @@ dotenv.config();
           actionCall = `await sap.navigateToTile(\`${instr}\`);`;
           break;
         case 'act':
-          actionCall = `await sap.act(\`${instr}\`);`;
+          actionCall = `await sap.act(\`${instr}\`);
+      // Check for error message at the bottom of the page
+      try {
+        const bottomMsg = await sap.extractText('Read any message or notification that appears at the bottom of the page');
+        if (bottomMsg && /purchase order number in document number.*already exists/i.test(bottomMsg)) {
+          throw new Error('SAP Error: ' + bottomMsg);
+        }
+      } catch (extractErr: any) {
+        if (extractErr.message.startsWith('SAP Error:')) throw extractErr;
+        // No message found or extraction failed – continue normally
+      }`;
           break;
         case 'extract':
           actionCall = `await sap.extract(\`${instr}\`);`;
