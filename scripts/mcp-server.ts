@@ -76,12 +76,23 @@ dotenv.config();
       await sap.waitForFullPageLoad();
     });
 
-    await wrapper.timeStep('Verify UMS Fiori', 'Verify UMS Fiori page loaded', async () => {
-      const fioriPageTitle = await sap.getPageTitle();
-      if (fioriPageTitle !== 'Home') {
-        throw new Error('Expected page title "Home" but got: ' + fioriPageTitle);
+    await wrapper.timeStep('Verify UMS Fiori', 'Verify UMS Fiori page loaded (3 attempts, 5s each)', async () => {
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const fioriPageTitle = await sap.getPageTitle();
+        if (fioriPageTitle === 'Home') {
+          console.log('✅ Successfully opened UMS Fiori');
+          return;
+        }
+        console.warn(\`⚠️  Attempt \${attempt}/3: expected "Home" but got "\${fioriPageTitle}"\`);
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 5000));
+          await sap.waitForFullPageLoad();
+        }
       }
-      console.log('✅ Successfully opened UMS Fiori');
+      const finalTitle = await sap.getPageTitle();
+      if (finalTitle !== 'Home') {
+        throw new Error('Expected page title "Home" but got: ' + finalTitle);
+      }
     });
 `;
 
