@@ -59,6 +59,19 @@ export class TestWrapper {
   }
 
   /**
+   * Attach a screenshot filename to the most recent step.
+   * The filename should be relative to the report directory.
+   */
+  attachScreenshot(screenshotFilename: string) {
+    if (!this.currentTest || this.currentTest.steps.length === 0) {
+      console.warn('No step to attach screenshot to');
+      return;
+    }
+    const lastStep = this.currentTest.steps[this.currentTest.steps.length - 1];
+    lastStep.screenshot = screenshotFilename;
+  }
+
+  /**
    * End current test and add to report
    */
   endTest(status: 'passed' | 'failed' | 'warning' = 'passed', metadata?: any) {
@@ -90,9 +103,9 @@ export class TestWrapper {
   /**
    * Generate and save the report
    */
-  generateReport(filename?: string): string {
+  generateReport(filename?: string, reportDir?: string): string {
     const reportFile = filename || `report-${Date.now()}.html`;
-    
+
     // Set token usage before generating report
     const totalTokens = globalResourceManager.getTotalTokens();
     this.report.setTotalTokens(totalTokens);
@@ -103,8 +116,8 @@ export class TestWrapper {
     console.log('  Stdout write calls:', diagnostics.stdoutWriteCalls);
     console.log('  Usage lines found:', diagnostics.usageLinesFound);
     console.log('  Total tokens collected:', diagnostics.totalTokensCollected);
-    
-    const reportPath = this.report.saveReport(reportFile);
+
+    const reportPath = this.report.saveReport(reportFile, reportDir);
 
     const summary = this.report['data'].summary;
     

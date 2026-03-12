@@ -31,6 +31,9 @@ function generateScript(data: any) {
 
   const imports = `import { SAPFioriAutomation } from './helper.js';
 import { TestWrapper } from '../../src/test-wrapper.js';
+import { ReportGenerator } from '../../src/report-generator.js';
+import { mkdirSync } from 'fs';
+import { join } from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -39,6 +42,13 @@ dotenv.config();
 
   const bodyStart = `async function ${funcName}() {
   console.log('🚀 Running generated test "${testName}"');
+
+  // Create the report directory up front so screenshots go in the same folder
+  const reportTs = ReportGenerator.buildTimestamp();
+  const reportDir = join('reports', reportTs);
+  mkdirSync(reportDir, { recursive: true });
+  let screenshotCounter = 0;
+
   const wrapper = new TestWrapper('${testName}');
   wrapper.startTest('${testName}');
   const sap = new SAPFioriAutomation({ baseUrl: '${data.url}', client: '100', language: 'EN' });
@@ -84,6 +94,19 @@ dotenv.config();
       const expectedResult = (step.expectedResult || '').replace(/`/g, '\\`');
       const stepLabel = `Step ${index + 1}: ${action}`;
       const stepDesc = instr || action;
+
+      // Handle screenshot action separately (it needs special step attachment)
+      if (action === 'screenshot') {
+        stepsCode += `\n    await wrapper.timeStep('${stepLabel}', \`${stepDesc || 'Take screenshot'}\`, async () => {
+      screenshotCounter++;
+      const screenshotFile = \`screenshot_${safe}_step\${screenshotCounter}.jpg\`;
+      const screenshotPath = join(reportDir, screenshotFile);
+      await sap.takeScreenshot(screenshotPath);
+      // Attach screenshot filename (relative) to this step in the report
+      wrapper.attachScreenshot(screenshotFile);
+    });\n`;
+        return; // skip the generic wrapper below
+      }
 
       // Build the action call
       let actionCall = '';
@@ -140,7 +163,7 @@ dotenv.config();
     }
 
     const reportFile = '${safe}';
-    const reportPath = wrapper.generateReport(reportFile);
+    const reportPath = wrapper.generateReport(reportFile, reportDir);
     console.log('📊 Report generated at:', reportPath);
 
     if (testStatus === 'failed') {
@@ -208,7 +231,19 @@ app.post('/upload-data', (req, res) => {
   busy = true;
   console.log('Starting child process to run', scriptPath);
 
-  const child = spawn('npm', ['run test', scriptPath], {shell: true, stdio: 'inherit'});
+  // Run tsx directly through node to avoid npm argument splitting (spaces in path issue).
+  const tsxCli = path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs');
+  if (!fs.existsSync(tsxCli)) {
+    console.error('tsx CLI not found at', tsxCli, '; falling back to npm run test');
+  }
+
+  const child = spawn(
+    process.execPath,
+    fs.existsSync(tsxCli)
+      ? [tsxCli, 'run-test.ts', scriptPath]
+      : ['npx', 'tsx', 'run-test.ts', scriptPath],
+    { stdio: 'inherit' }
+  );
 
   child.on('exit', (code, signal) => {
     console.log(`Child process exited with code=${code} signal=${signal}`);

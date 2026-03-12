@@ -396,6 +396,21 @@ export class SAPAutomation {
   }
 
   /**
+   * Take a screenshot and save it to the specified file path.
+   * Returns the absolute path of the saved screenshot.
+   */
+  async takeScreenshot(filePath: string): Promise<string> {
+    if (!this.stagehand || !this.stagehand.page) {
+      throw new Error('SAP Automation not initialized');
+    }
+
+    console.log(`📸 Taking screenshot: ${filePath}`);
+    await this.stagehand.page.screenshot({ path: filePath, type: 'jpeg', quality: 80 });
+    console.log(`✅ Screenshot saved: ${filePath}`);
+    return filePath;
+  }
+
+  /**
    * Extract data from SAP with schema validation
    */
   async extract<T>(instruction: string, schema: z.ZodSchema<T>): Promise<T> {

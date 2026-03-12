@@ -19,6 +19,8 @@ export interface TestStep {
   timestamp: string;
   details?: any;
   error?: string;
+  /** Filename of a screenshot captured during this step (relative to report dir) */
+  screenshot?: string;
 }
 
 export interface TestResult {
@@ -405,6 +407,16 @@ export class ReportGenerator {
       font-size: 0.85rem;
     }
 
+    .step-screenshot img {
+      transition: max-width 0.3s ease;
+    }
+
+    .step-screenshot img.expanded-img {
+      max-width: 100vw !important;
+      position: relative;
+      z-index: 10;
+    }
+
     @media print {
       body { background: white; padding: 0; }
       .container { border: none; }
@@ -588,6 +600,11 @@ export class ReportGenerator {
           <div class="step-duration">${step.duration}ms</div>
         </div>
         <div class="step-description">${step.description}</div>
+        ${step.screenshot ? `
+          <div class="step-screenshot" style="margin-top: 0.75rem;">
+            <img src="${step.screenshot}" alt="Screenshot: ${step.name}" style="max-width: 100%; border: 1px solid #e0e0e0; cursor: pointer;" onclick="this.classList.toggle('expanded-img')" />
+          </div>
+        ` : ''}
         ${step.details ? `<div class="step-details">${JSON.stringify(step.details, null, 2)}</div>` : ''}
         ${step.error ? `<div class="step-details" style="color: #dc3545;">${step.error}</div>` : ''}
       </div>
@@ -625,20 +642,31 @@ export class ReportGenerator {
     `;
   }
 
-  saveReport(filename?: string) {
+  /**
+   * Generate a timestamp string (YYYYMMDD_HHmmss) for report directories.
+   * Exposed as static so callers can pre-create the report directory
+   * and save screenshots there before the report is finalized.
+   */
+  static buildTimestamp(date: Date = new Date()): string {
+    return date.getFullYear().toString()
+      + String(date.getMonth() + 1).padStart(2, '0')
+      + String(date.getDate()).padStart(2, '0')
+      + '_'
+      + String(date.getHours()).padStart(2, '0')
+      + String(date.getMinutes()).padStart(2, '0')
+      + String(date.getSeconds()).padStart(2, '0');
+  }
+
+  /**
+   * Save the HTML report.
+   * @param filename  Base name for the report file (without timestamp or extension)
+   * @param reportDir Optional pre-created directory to save into (reuses existing dir for screenshots)
+   */
+  saveReport(filename?: string, reportDir?: string) {
     const html = this.generateHTML();
 
-    // Build timestamped directory: reports/YYYYMMDD_HHmmss/
-    const now = new Date();
-    const ts = now.getFullYear().toString()
-      + String(now.getMonth() + 1).padStart(2, '0')
-      + String(now.getDate()).padStart(2, '0')
-      + '_'
-      + String(now.getHours()).padStart(2, '0')
-      + String(now.getMinutes()).padStart(2, '0')
-      + String(now.getSeconds()).padStart(2, '0');
-
-    const dirPath = `reports/${ts}`;
+    const ts = ReportGenerator.buildTimestamp();
+    const dirPath = reportDir || `reports/${ts}`;
     mkdirSync(dirPath, { recursive: true });
 
     // Derive file name: test_name_timestamp.html
