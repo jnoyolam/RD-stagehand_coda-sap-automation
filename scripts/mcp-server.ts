@@ -63,12 +63,23 @@ dotenv.config();
       await sap.waitForFullPageLoad();
     });
 
-    await wrapper.timeStep('Verify Login', 'Verify ERP Launchpad loaded', async () => {
-      const pageTitle = await sap.getPageTitle();
-      if (pageTitle !== 'ERP Launchpad') {
-        throw new Error('Expected page title "ERP Launchpad" but got: ' + pageTitle);
+    await wrapper.timeStep('Verify Login', 'Verify ERP Launchpad loaded (3 attempts, 5s each)', async () => {
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const pageTitle = await sap.getPageTitle();
+        if (pageTitle === 'ERP Launchpad') {
+          console.log('✅ Successfully logged into ERP Launchpad');
+          return;
+        }
+        console.warn(\`⚠️  Attempt \${attempt}/3: expected "ERP Launchpad" but got "\${pageTitle}"\`);
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 5000));
+          await sap.waitForFullPageLoad();
+        }
       }
-      console.log('✅ Successfully logged into ERP Launchpad');
+      const finalTitle = await sap.getPageTitle();
+      if (finalTitle !== 'ERP Launchpad') {
+        throw new Error('Expected page title "ERP Launchpad" but got: ' + finalTitle);
+      }
     });
 
     await wrapper.timeStep('Open UMS Fiori', 'Navigate to UMS Fiori', async () => {
