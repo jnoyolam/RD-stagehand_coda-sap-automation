@@ -237,11 +237,12 @@ app.post('/upload-data', (req, res) => {
     console.error('tsx CLI not found at', tsxCli, '; falling back to npm run test');
   }
 
+  // Run the generated script directly (it self-invokes and handles its own reporting)
   const child = spawn(
     process.execPath,
     fs.existsSync(tsxCli)
-      ? [tsxCli, 'run-test.ts', scriptPath]
-      : ['npx', 'tsx', 'run-test.ts', scriptPath],
+      ? [tsxCli, scriptPath]
+      : ['npx', 'tsx', scriptPath],
     { stdio: 'inherit' }
   );
 
