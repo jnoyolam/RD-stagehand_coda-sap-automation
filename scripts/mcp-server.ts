@@ -145,6 +145,9 @@ dotenv.config();
         case 'extract':
           actionCall = `await sap.extract(\`${instr}\`);`;
           break;
+        case 'extractText':
+          actionCall = `const extractedText = await sap.extractText(\`${instr}\`);\n      console.log('Extracted text:', extractedText);`;
+          break;
         case 'keyboard': {
           const times = step.data ? Number(step.data) : 1;
           actionCall = `await sap.keyboard(\`${instr}\`, { times: ${times} });`;
