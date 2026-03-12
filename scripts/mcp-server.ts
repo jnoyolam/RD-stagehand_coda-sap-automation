@@ -42,9 +42,24 @@ dotenv.config();
   try {
     await sap.initialize();
     await sap.login(process.env.SAP_USERNAME!);
+    await sap.waitForFullPageLoad();
+    const pageTitle = await sap.getPageTitle();
+    if (pageTitle !== 'ERP Launchpad') {
+      throw new Error('Expected page title \'ERP Launchpad\' but got \'' + pageTitle + '\'');
+    }
+    else {
+      console.log('✅ Successfully logged into ERP Launchpad');
+    }
 
-    console.log('✅ Successfully logged into SAP Fiori Launchpad');
     await sap.act('Open the UMS Fiori');
+    await sap.waitForFullPageLoad();
+    const fioriPageTitle = await sap.getPageTitle();
+    if (fioriPageTitle !== 'ERP Launchpad') {
+      throw new Error('Expected page title \'ERP Launchpad\' but got \'' + fioriPageTitle + '\'');
+    }
+    else {
+      console.log('✅ Successfully opened UMS Fiori');
+    }
 `;
 
   let stepsCode = '';
