@@ -301,6 +301,52 @@ export class SAPAutomation {
   }
 
   /**
+   * Perform an act action and check for SAP error messages at the bottom of the page.
+   * This is the standard action used by generated test scripts — it combines
+   * act() + bottom-message extraction + duplicate PO detection in one call.
+   */
+  async actWithErrorCheck(instruction: string) {
+    await this.act(instruction);
+
+    console.log('🔍 Checking for error messages at the bottom of the page...');
+    try {
+      const bottomMsg = await this.extractText('Read any message or notification that appears at the bottom of the page');
+      console.log('📩 Extracted bottom message:', JSON.stringify(bottomMsg));
+      console.log('📩 Type:', typeof bottomMsg);
+      console.log('📩 Length:', bottomMsg ? bottomMsg.length : 'N/A');
+      if (bottomMsg) {
+        const regexMatch = /purchase order number in document number.*already exists/i.test(bottomMsg);
+        console.log('📩 Regex match result:', regexMatch);
+        if (regexMatch) {
+          console.error('🛑 SAP duplicate PO error detected! Stopping execution.');
+          throw new Error('SAP Error: ' + bottomMsg);
+        } else {
+          console.log('✅ Message found but no duplicate PO error. Continuing...');
+        }
+      } else {
+        console.log('✅ No bottom message found. Continuing...');
+      }
+    } catch (extractErr: any) {
+      console.log('⚠️ Extract catch block hit. Error message:', extractErr.message);
+      if (extractErr.message.startsWith('SAP Error:')) throw extractErr;
+      console.log('ℹ️ Extraction failed or no message – continuing normally.');
+    }
+  }
+
+  /**
+   * Take a screenshot and attach it to the test wrapper report.
+   * Returns the screenshot filename so the caller can track counters externally.
+   */
+  async takeStepScreenshot(
+    screenshotPath: string,
+    screenshotFile: string,
+    wrapper: { attachScreenshot: (file: string) => void }
+  ): Promise<void> {
+    await this.takeScreenshot(screenshotPath);
+    wrapper.attachScreenshot(screenshotFile);
+  }
+
+  /**
    * Wait for the page to be fully loaded with no pending resources.
    * Waits for: network idle, SAP busy indicators, and document.readyState === 'complete'.
    * Use this between instructions to prevent race conditions and timeout crashes.
