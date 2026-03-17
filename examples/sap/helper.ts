@@ -826,11 +826,16 @@ export class SAPFioriAutomation extends SAPAutomation {
    *                    (defaults to "documentNumber").
    */
   async verifyDocNumber(): Promise<{ extractedText: string }> {
-    const docNumber = this.context.get('lastVerify');
-    if (!docNumber) {
+    const lastVerify = this.context.get('lastVerify');
+    if (!lastVerify) {
       throw new Error('No value found in context. Make sure a prior "verify" step ran before "verifyDocNumber".');
     }
-    console.log(`🔍 Verifying document number: ${docNumber}`);
+
+    // Extract only the numeric document number from the full message
+    // e.g. "Intercompany Sales 328426389 has been saved." → "328426389"
+    const match = lastVerify.match(/\d+/);
+    const docNumber = match ? match[0] : lastVerify;
+    console.log(`🔍 Verifying document number: ${docNumber} (from: "${lastVerify}")`);
 
     // 1. Navigate to Display Sales Order
     await this.searchAndNavigate('Display Sales Order');
