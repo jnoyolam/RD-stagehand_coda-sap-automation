@@ -334,6 +334,18 @@ export class SAPAutomation {
   }
 
   /**
+   * Verify / extract information from the page and return it so it gets
+   * recorded in the test report step details.
+   * Use inside a wrapper.timeStep — the returned object becomes the step's `details`.
+   */
+  async verify(instruction: string): Promise<{ extractedText: string }> {
+    console.log(`🔍 Verify: ${instruction}`);
+    const text = await this.extractText(instruction);
+    console.log('📋 Extracted:', text);
+    return { extractedText: text };
+  }
+
+  /**
    * Take a screenshot and attach it to the test wrapper report.
    * Returns the screenshot filename so the caller can track counters externally.
    */

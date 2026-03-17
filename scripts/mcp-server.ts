@@ -141,6 +141,9 @@ dotenv.config();
         case 'act':
           actionCall = `await sap.actWithErrorCheck(\`${instr}\`);`;
           break;
+        case 'verify':
+          actionCall = `return await sap.verify(\`${instr}\`);`;
+          break;
         case 'extract':
           actionCall = `await sap.extract(\`${instr}\`);`;
           break;
