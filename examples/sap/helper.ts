@@ -856,15 +856,15 @@ export class SAPFioriAutomation extends SAPAutomation {
       console.log('📩 Bottom message:', bottomMsg);
       if (bottomMsg && /SD document.*is not in the datab|has been archived/i.test(bottomMsg)) {
         console.error(`🛑 Document ${docNumber} not found in database!`);
-        throw new Error(`SAP Error: ${bottomMsg}`);
+        throw new Error(`FAIL — Document ${docNumber} not found: ${bottomMsg}`);
       }
-      console.log(`✅ Document ${docNumber} verified successfully`);
-      return { extractedText: bottomMsg || `Document ${docNumber} displayed successfully` };
     } catch (err: any) {
-      if (err.message.startsWith('SAP Error:')) throw err;
+      if (err.message.startsWith('FAIL')) throw err;
       console.log('ℹ️ No error message found — document likely loaded fine.');
-      return { extractedText: `Document ${docNumber} displayed successfully` };
     }
+
+    console.log(`✅ Document ${docNumber} verified successfully`);
+    return { extractedText: `PASS — Document ${docNumber} exists in SAP` };
   }
 }
 

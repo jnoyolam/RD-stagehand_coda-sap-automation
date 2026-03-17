@@ -84,8 +84,8 @@ dotenv.config();
     });
 
     await wrapper.timeStep('Open UMS Fiori', 'Navigate to UMS Fiori', async () => {
-      // Click the Neptune "Open" button directly via Playwright to avoid shadow DOM issues
-      const openBtn = sap.page.locator('button.nepTileAction bdi:text("Open")').first();
+      // Click the 4th Neptune "Open" button directly via Playwright to avoid shadow DOM issues
+      const openBtn = sap.page.locator('button.nepTileAction bdi:text("Open")').nth(3);
       await openBtn.click({ timeout: 15000 });
       await sap.waitForFullPageLoad();
     });
