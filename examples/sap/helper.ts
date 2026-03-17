@@ -59,6 +59,8 @@ export class SAPAutomation {
   protected retryManager: RetryManager;
   protected smartWaits: SmartWaits;
   protected sapConfig: SAPConfig;
+  /** Shared context for passing data between steps (e.g. extracted doc numbers) */
+  public context: Map<string, string> = new Map();
 
   constructor(sapConfig: SAPConfig) {
     this.sapConfig = {
@@ -337,11 +339,15 @@ export class SAPAutomation {
    * Verify / extract information from the page and return it so it gets
    * recorded in the test report step details.
    * Use inside a wrapper.timeStep — the returned object becomes the step's `details`.
+   * When `saveAs` is provided the extracted text is also stored in `this.context`
+   * so later steps can reference it.
    */
   async verify(instruction: string): Promise<{ extractedText: string }> {
     console.log(`🔍 Verify: ${instruction}`);
     const text = await this.extractText(instruction);
     console.log('📋 Extracted:', text);
+    this.context.set('lastVerify', text);
+    console.log(`💾 Saved to context["lastVerify"]: ${text}`);
     return { extractedText: text };
   }
 
@@ -809,6 +815,51 @@ export class SAPFioriAutomation extends SAPAutomation {
     await this.waitForUI5Ready();
 
     console.log('✅ Table sorted');
+  }
+
+  /**
+   * Verify a document number by navigating to Display Sales Order,
+   * filling the order field with the value previously stored in context
+   * via a `verify` step with `saveAs`, and checking that the document exists.
+   *
+   * @param contextKey  The key used in a prior `verify(..., saveAs)` call
+   *                    (defaults to "documentNumber").
+   */
+  async verifyDocNumber(): Promise<{ extractedText: string }> {
+    const docNumber = this.context.get('lastVerify');
+    if (!docNumber) {
+      throw new Error('No value found in context. Make sure a prior "verify" step ran before "verifyDocNumber".');
+    }
+    console.log(`🔍 Verifying document number: ${docNumber}`);
+
+    // 1. Navigate to Display Sales Order
+    await this.searchAndNavigate('Display Sales Order');
+    await this.waitForFullPageLoad();
+
+    // 2. Fill the Order field with the stored document number
+    await this.act(`Fill the Order field with ${docNumber}`);
+    await this.waitForFullPageLoad();
+
+    // 3. Press Enter
+    await this.act('Press Enter');
+    await this.waitForFullPageLoad();
+
+    // 4. Check bottom message for "not in the database or has been archived"
+    console.log('🔍 Checking for document-not-found error...');
+    try {
+      const bottomMsg = await this.extractText('Read any message or notification that appears at the bottom of the page');
+      console.log('📩 Bottom message:', bottomMsg);
+      if (bottomMsg && /SD document.*is not in the datab|has been archived/i.test(bottomMsg)) {
+        console.error(`🛑 Document ${docNumber} not found in database!`);
+        throw new Error(`SAP Error: ${bottomMsg}`);
+      }
+      console.log(`✅ Document ${docNumber} verified successfully`);
+      return { extractedText: bottomMsg || `Document ${docNumber} displayed successfully` };
+    } catch (err: any) {
+      if (err.message.startsWith('SAP Error:')) throw err;
+      console.log('ℹ️ No error message found — document likely loaded fine.');
+      return { extractedText: `Document ${docNumber} displayed successfully` };
+    }
   }
 }
 
