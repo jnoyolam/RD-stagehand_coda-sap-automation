@@ -98,10 +98,7 @@ dotenv.config();
           return;
         }
         console.warn(\`⚠️  Attempt \${attempt}/3: expected "Home" but got "\${fioriPageTitle}"\`);
-        if (attempt < 3) {
-          await new Promise(r => setTimeout(r, 5000));
-          await sap.waitForFullPageLoad();
-        }
+        if (attempt < 3) c
       }
       const finalTitle = await sap.getPageTitle();
       if (finalTitle !== 'Home') {
@@ -291,11 +288,18 @@ app.post('/upload-data', (req, res) => {
     console.log(`Child process exited with code=${code} signal=${signal}`);
     busy = false;
     activeTests.delete(safeName);
+
+    // Rename the script with a timestamp instead of deleting it
     try {
-      fs.unlinkSync(scriptPath);
-      console.log('Deleted script file', scriptPath);
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const ts = `${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${now.getFullYear()}-${pad(now.getHours())}-${pad(now.getMinutes())}`;
+      const archivedName = `${ts}-${safeName}.ts`;
+      const archivedPath = path.join(path.dirname(scriptPath), archivedName);
+      fs.renameSync(scriptPath, archivedPath);
+      console.log('Archived script file:', archivedPath);
     } catch (err) {
-      console.error('Error deleting script file', err);
+      console.error('Error archiving script file', err);
     }
   });
 
