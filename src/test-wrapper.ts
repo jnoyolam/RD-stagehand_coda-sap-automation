@@ -15,6 +15,7 @@ export class TestWrapper {
     name: string;
     startTime: number;
     steps: TestStep[];
+    documentNumber?: string;
   } | null = null;
 
   constructor(title: string = 'Test Execution Report') {
@@ -72,6 +73,17 @@ export class TestWrapper {
   }
 
   /**
+   * Store a document number so it appears in the report below the test title.
+   */
+  setDocumentNumber(docNumber: string) {
+    if (!this.currentTest) {
+      console.warn('No active test — cannot set document number');
+      return;
+    }
+    this.currentTest.documentNumber = docNumber;
+  }
+
+  /**
    * End current test and add to report
    */
   endTest(status: 'passed' | 'failed' | 'warning' = 'passed', metadata?: any) {
@@ -89,6 +101,7 @@ export class TestWrapper {
       steps: this.currentTest.steps,
       startTime: new Date(this.currentTest.startTime).toISOString(),
       endTime,
+      documentNumber: this.currentTest.documentNumber,
       metadata
     };
 

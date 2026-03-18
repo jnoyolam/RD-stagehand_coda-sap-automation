@@ -342,12 +342,19 @@ export class SAPAutomation {
    * When `saveAs` is provided the extracted text is also stored in `this.context`
    * so later steps can reference it.
    */
-  async verify(instruction: string): Promise<{ extractedText: string }> {
+  async verify(instruction: string, wrapper?: { setDocumentNumber: (n: string) => void }): Promise<{ extractedText: string }> {
     console.log(`🔍 Verify: ${instruction}`);
     const text = await this.extractText(instruction);
     console.log('📋 Extracted:', text);
     this.context.set('lastVerify', text);
     console.log(`💾 Saved to context["lastVerify"]: ${text}`);
+
+    // Store the full extracted text on the wrapper for the report
+    if (text && wrapper) {
+      wrapper.setDocumentNumber(text);
+      console.log(`📝 Verify text set on report: ${text}`);
+    }
+
     return { extractedText: text };
   }
 
