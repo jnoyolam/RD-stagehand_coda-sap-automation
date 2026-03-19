@@ -511,7 +511,7 @@ export class ReportGenerator {
     // Toggle test body
     document.querySelectorAll('.test-header').forEach(header => {
       header.addEventListener('click', () => {
-        const body = header.nextElementSibling;
+        const body = header.closest('.test-card').querySelector('.test-body');
         body.classList.toggle('expanded');
       });
     });

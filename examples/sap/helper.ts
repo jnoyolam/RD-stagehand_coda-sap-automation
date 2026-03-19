@@ -322,8 +322,17 @@ export class SAPAutomation {
         if (regexMatch) {
           console.error('🛑 SAP duplicate PO error detected! Stopping execution.');
           throw new Error('SAP Error: ' + bottomMsg);
-        } else {
-          console.log('✅ Message found but no duplicate PO error. Continuing...');
+        }
+
+        const materialNotDefined = /material\s+\S+\s+is not defined for sales/i.test(bottomMsg);
+        console.log('📩 Material not defined match result:', materialNotDefined);
+        if (materialNotDefined) {
+          console.error('🛑 SAP material not defined error detected! Stopping execution.');
+          throw new Error('SAP Error: ' + bottomMsg);
+        }
+
+        if (!regexMatch && !materialNotDefined) {
+          console.log('✅ Message found but no known error. Continuing...');
         }
       } else {
         console.log('✅ No bottom message found. Continuing...');
