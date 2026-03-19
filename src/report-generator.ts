@@ -581,12 +581,12 @@ export class ReportGenerator {
             <span>📊 ${test.steps.length} steps</span>
           </div>
         </div>
+        ${test.documentNumber ? `
+        <div style="padding: 0.75rem 1rem; background: #e8f5e9; border: 1px solid #c8e6c9; font-size: 0.95rem; border-bottom: 1px solid #e0e0e0;">
+          <strong>Document Number:</strong> ${test.documentNumber}
+        </div>
+        ` : ''}
         <div class="test-body">
-          ${test.documentNumber ? `
-          <div style="padding: 0.75rem 1rem; background: #e8f5e9; border: 1px solid #c8e6c9; margin-bottom: 1rem; font-size: 0.95rem;">
-            <strong>Document Number:</strong> ${test.documentNumber}
-          </div>
-          ` : ''}
           <div class="steps-timeline">
             ${test.steps.map(step => this.generateStep(step)).join('')}
           </div>
