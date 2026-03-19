@@ -98,7 +98,10 @@ dotenv.config();
           return;
         }
         console.warn(\`⚠️  Attempt \${attempt}/3: expected "Home" but got "\${fioriPageTitle}"\`);
-        if (attempt < 3) c
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 5000));
+          await sap.waitForFullPageLoad();
+        }
       }
       const finalTitle = await sap.getPageTitle();
       if (finalTitle !== 'Home') {
